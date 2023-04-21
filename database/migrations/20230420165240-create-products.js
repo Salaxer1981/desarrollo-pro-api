@@ -4,23 +4,27 @@ module.exports = {
   up: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.createTable('users_stripe', {
-        user_id: {
+      await queryInterface.createTable('products', {
+        id: {
           allowNull: false,
-          type: Sequelize.UUID,
-          primaryKey:true,
-          foreignKey:true,
-          reference:{
-            model: 'users',
-            key: 'id'
-          },
-          onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
+          type: Sequelize.INTEGER,
+          defaultValue: Sequelize.UUIDV4,
+          primaryKey: true,
+          autoIncrement: true,
         },
-        client_id: {
+        name: {
           allowNull: false,
           type: Sequelize.STRING,
         },
+        price_id: {
+          allowNull: false,
+          type: Sequelize.STRING,
+        },
+        description: {
+          allowNull: false,
+          type: Sequelize.STRING,
+        },
+
         created_at: {
           allowNull: false,
           type: Sequelize.DATE,
@@ -39,7 +43,7 @@ module.exports = {
   down: async (queryInterface, /*Sequelize*/) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.dropTable('users_stripe', { transaction })
+      await queryInterface.dropTable('products', { transaction })
       await transaction.commit()
     } catch (error) {
       await transaction.rollback()

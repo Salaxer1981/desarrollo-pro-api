@@ -1,25 +1,29 @@
-//migration de users creada por sequelize-cli y editada por nosotros
 'use strict'
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.createTable('users_stripe', {
-        user_id: {
+      await queryInterface.createTable('users', {
+        id: {
+          allowNull: false,
+          primaryKey: true,
+          type: Sequelize.BIGINT,
+          autoIncrement: true
+        },
+        application_id: {
           allowNull: false,
           type: Sequelize.UUID,
-          primaryKey:true,
-          foreignKey:true,
+          foreignKey: true,
           reference:{
-            model: 'users',
-            key: 'id'
+            model: 'application',
+            key: 'id',
           },
           onUpdate: 'CASCADE',
-          onDelete: 'RESTRICT'
+          onDelete: 'RESTRICT',
         },
-        client_id: {
+        payment_intent: {
           allowNull: false,
-          type: Sequelize.STRING,
+          type: Sequelize.STRING
         },
         created_at: {
           allowNull: false,
@@ -39,7 +43,7 @@ module.exports = {
   down: async (queryInterface, /*Sequelize*/) => {
     const transaction = await queryInterface.sequelize.transaction()
     try {
-      await queryInterface.dropTable('users_stripe', { transaction })
+      await queryInterface.dropTable('users', { transaction })
       await transaction.commit()
     } catch (error) {
       await transaction.rollback()
